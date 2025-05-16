@@ -9,5 +9,6 @@ Kali linux / parrot security os
 ```
 git clone https://github.com/ediop3SquadALT/Aliens3earth
 cd Aliens3earth
-python3 aliens3earth.py
+sudo bash setup.sh
+sudo python3 aliens3earth.py
 ```
